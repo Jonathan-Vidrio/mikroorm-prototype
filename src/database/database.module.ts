@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import config from './database.provider';
+import { DatabaseProvider } from './database.provider';
 
 @Module({
-  imports: [MikroOrmModule.forRoot(config)],
+  imports: [
+    MikroOrmModule.forRootAsync({
+      useClass: DatabaseProvider,
+    }),
+  ],
   providers: [],
   exports: [MikroOrmModule],
 })
