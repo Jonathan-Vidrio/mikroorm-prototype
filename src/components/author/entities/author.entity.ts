@@ -29,7 +29,11 @@ export class Author {
   @Property({ fieldName: 'Nationality', nullable: false })
   Nationality!: string;
 
-  @ManyToOne(() => Status, { fieldName: 'StatusId', nullable: false })
+  @ManyToOne(() => Status, {
+    fieldName: 'StatusId',
+    nullable: false,
+    default: 1,
+  })
   Status!: Status;
 
   @Property({
@@ -47,5 +51,5 @@ export class Author {
   updatedAt: Date;
 
   @OneToMany(() => Book, (book) => book.Author)
-  Books = new Collection<Book>(this);
+  Books? = new Collection<Book>(this);
 }

@@ -40,7 +40,11 @@ export class Book {
   @ManyToOne(() => Language, { fieldName: 'LanguageId', nullable: false })
   Language!: Language;
 
-  @ManyToOne(() => Status, { fieldName: 'StatusId', nullable: false })
+  @ManyToOne(() => Status, {
+    fieldName: 'StatusId',
+    nullable: false,
+    default: 1,
+  })
   Status!: Status;
 
   @Property({

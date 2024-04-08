@@ -37,17 +37,17 @@ export class Status {
   updatedAt: Date;
 
   @OneToMany(() => Book, (book) => book.Status)
-  Books = new Collection<Book>(this);
+  Books? = new Collection<Book>(this);
 
   @OneToMany(() => Author, (author) => author.Status)
-  Authors = new Collection<Author>(this);
+  Authors? = new Collection<Author>(this);
 
   @OneToMany(() => Editorial, (editorial) => editorial.Status)
-  Editorials = new Collection<Editorial>(this);
+  Editorials? = new Collection<Editorial>(this);
 
   @OneToMany(() => Category, (category) => category.Status)
-  Categories = new Collection<Category>(this);
+  Categories? = new Collection<Category>(this);
 
   @OneToMany(() => Language, (language) => language.Status)
-  Languages = new Collection<Language>(this);
+  Languages? = new Collection<Language>(this);
 }
