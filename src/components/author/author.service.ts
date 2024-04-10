@@ -21,50 +21,27 @@ export class AuthorService {
       ...createAuthorDto,
       updatedAt: new Date(),
     });
+
     await this.em.persistAndFlush(author);
 
-    return await this.findOne(author.Id);
+    return author;
   }
 
   async findAll(): Promise<Author[]> {
-    const authors = await this.authorRepository.findAll({
-      populate: ['Status'],
+    return await this.authorRepository.findAll({
+      populate: ['Status', 'Books'],
     });
-
-    return authors.map((author) => ({
-      Id: author.Id,
-      FirstName: author.FirstName,
-      LastName: author.LastName,
-      Pseudonym: author.Pseudonym,
-      BirthDate: author.BirthDate,
-      Nationality: author.Nationality,
-      Status: author.Status,
-      createdAt: author.createdAt,
-      updatedAt: author.updatedAt,
-    }));
   }
 
   async findOne(id: number): Promise<Author> {
-    const author = await this.authorRepository.findOne(
+    return await this.authorRepository.findOne(
       { Id: id },
       { populate: ['Status'] },
     );
-
-    return {
-      Id: author.Id,
-      FirstName: author.FirstName,
-      LastName: author.LastName,
-      Pseudonym: author.Pseudonym,
-      BirthDate: author.BirthDate,
-      Nationality: author.Nationality,
-      Status: author.Status,
-      createdAt: author.createdAt,
-      updatedAt: author.updatedAt,
-    };
   }
 
   async update(id: number, updateAuthorDto: UpdateAuthorDto): Promise<Author> {
-    const author = await this.findOne(id);
+    const author = await this.authorRepository.findOne({ Id: id });
 
     if (author) {
       if (updateAuthorDto.StatusId) {
@@ -81,7 +58,7 @@ export class AuthorService {
   }
 
   async remove(id: number): Promise<Author> {
-    const author = await this.findOne(id);
+    const author = await this.authorRepository.findOne({ Id: id });
 
     if (author) {
       await this.em.removeAndFlush(author);

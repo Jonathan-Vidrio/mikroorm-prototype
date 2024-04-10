@@ -54,58 +54,24 @@ export class BookService {
 
     await this.em.persistAndFlush(book);
 
-    return await this.findOne(book.Id);
+    return book;
   }
 
   async findAll(): Promise<Book[]> {
-    const books = await this.bookRepository.findAll({
+    return await this.bookRepository.findAll({
       populate: ['Author', 'Editorial', 'Category', 'Language', 'Status'],
     });
-
-    return books.map((book) => ({
-      Id: book.Id,
-      ISBN: book.ISBN,
-      Title: book.Title,
-      Subtitle: book.Subtitle,
-      PublishDate: book.PublishDate,
-      Pages: book.Pages,
-      Description: book.Description,
-      Author: book.Author,
-      Editorial: book.Editorial,
-      Category: book.Category,
-      Language: book.Language,
-      Status: book.Status,
-      createdAt: book.createdAt,
-      updatedAt: book.updatedAt,
-    }));
   }
 
   async findOne(id: number): Promise<Book> {
-    const book = await this.bookRepository.findOne(
+    return await this.bookRepository.findOne(
       { Id: id },
       { populate: ['Author', 'Editorial', 'Category', 'Language', 'Status'] },
     );
-
-    return {
-      Id: book.Id,
-      ISBN: book.ISBN,
-      Title: book.Title,
-      Subtitle: book.Subtitle,
-      PublishDate: book.PublishDate,
-      Pages: book.Pages,
-      Description: book.Description,
-      Author: book.Author,
-      Editorial: book.Editorial,
-      Category: book.Category,
-      Language: book.Language,
-      Status: book.Status,
-      createdAt: book.createdAt,
-      updatedAt: book.updatedAt,
-    };
   }
 
   async update(id: number, updateBookDto: UpdateBookDto): Promise<Book> {
-    const book = await this.findOne(id);
+    const book = await this.bookRepository.findOne({ Id: id });
 
     if (book) {
       if (updateBookDto.AuthorId) {
@@ -146,7 +112,7 @@ export class BookService {
   }
 
   async remove(id: number): Promise<Book> {
-    const book = await this.findOne(id);
+    const book = await this.bookRepository.findOne({ Id: id });
 
     if (book) {
       await this.em.removeAndFlush(book);

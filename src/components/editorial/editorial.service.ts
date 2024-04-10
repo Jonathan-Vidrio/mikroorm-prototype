@@ -21,53 +21,30 @@ export class EditorialService {
       ...createEditorialDto,
       updatedAt: new Date(),
     });
+
     await this.em.persistAndFlush(editorial);
 
-    return await this.findOne(editorial.Id);
+    return editorial;
   }
 
   async findAll(): Promise<Editorial[]> {
-    const editorials = await this.editorialRepository.findAll({
-      populate: ['Status'],
+    return await this.editorialRepository.findAll({
+      populate: ['Status', 'Books'],
     });
-
-    return editorials.map((editorial) => ({
-      Id: editorial.Id,
-      Name: editorial.Name,
-      Address: editorial.Address,
-      Phone: editorial.Phone,
-      Email: editorial.Email,
-      Website: editorial.Website,
-      Status: editorial.Status,
-      createdAt: editorial.createdAt,
-      updatedAt: editorial.updatedAt,
-    }));
   }
 
   async findOne(id: number): Promise<Editorial> {
-    const editorial = await this.editorialRepository.findOne(
+    return await this.editorialRepository.findOne(
       { Id: id },
       { populate: ['Status'] },
     );
-
-    return {
-      Id: editorial.Id,
-      Name: editorial.Name,
-      Address: editorial.Address,
-      Phone: editorial.Phone,
-      Email: editorial.Email,
-      Website: editorial.Website,
-      Status: editorial.Status,
-      createdAt: editorial.createdAt,
-      updatedAt: editorial.updatedAt,
-    };
   }
 
   async update(
     id: number,
     updateEditorialDto: UpdateEditorialDto,
   ): Promise<Editorial> {
-    const editorial = await this.findOne(id);
+    const editorial = await this.editorialRepository.findOne({ Id: id });
 
     if (editorial) {
       if (updateEditorialDto.StatusId) {
@@ -84,7 +61,7 @@ export class EditorialService {
   }
 
   async remove(id: number): Promise<Editorial> {
-    const editorial = await this.findOne(id);
+    const editorial = await this.editorialRepository.findOne({ Id: id });
 
     if (editorial) {
       await this.em.removeAndFlush(editorial);

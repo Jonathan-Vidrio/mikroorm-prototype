@@ -21,47 +21,30 @@ export class CategoryService {
       ...createCategoryDto,
       updatedAt: new Date(),
     });
+
     await this.em.persistAndFlush(category);
 
-    return await this.findOne(category.Id);
+    return category;
   }
 
   async findAll(): Promise<Category[]> {
-    const categories = await this.categoryRepository.findAll({
-      populate: ['Status'],
+    return await this.categoryRepository.findAll({
+      populate: ['Status', 'Books'],
     });
-
-    return categories.map((category) => ({
-      Id: category.Id,
-      Name: category.Name,
-      Description: category.Description,
-      Status: category.Status,
-      createdAt: category.createdAt,
-      updatedAt: category.updatedAt,
-    }));
   }
 
   async findOne(id: number): Promise<Category> {
-    const category = await this.categoryRepository.findOne(
+    return await this.categoryRepository.findOne(
       { Id: id },
       { populate: ['Status'] },
     );
-
-    return {
-      Id: category.Id,
-      Name: category.Name,
-      Description: category.Description,
-      Status: category.Status,
-      createdAt: category.createdAt,
-      updatedAt: category.updatedAt,
-    };
   }
 
   async update(
     id: number,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<Category> {
-    const category = await this.findOne(id);
+    const category = await this.categoryRepository.findOne({ Id: id });
 
     if (category) {
       if (updateCategoryDto.StatusId) {
@@ -78,7 +61,7 @@ export class CategoryService {
   }
 
   async remove(id: number): Promise<Category> {
-    const category = await this.findOne(id);
+    const category = await this.categoryRepository.findOne({ Id: id });
 
     if (category) {
       await this.em.removeAndFlush(category);

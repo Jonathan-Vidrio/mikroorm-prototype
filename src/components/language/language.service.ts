@@ -21,40 +21,23 @@ export class LanguageService {
       ...createLanguageDto,
       updatedAt: new Date(),
     });
+
     await this.em.persistAndFlush(language);
 
-    return await this.findOne(language.Id);
+    return language;
   }
 
   async findAll(): Promise<Language[]> {
-    const languages = await this.languageRepository.findAll({
-      populate: ['Status'],
+    return await this.languageRepository.findAll({
+      populate: ['Status', 'Books'],
     });
-
-    return languages.map((language) => ({
-      Id: language.Id,
-      Name: language.Name,
-      Description: language.Description,
-      createdAt: language.createdAt,
-      updatedAt: language.updatedAt,
-      Status: language.Status,
-    }));
   }
 
   async findOne(id: number): Promise<Language> {
-    const language = await this.languageRepository.findOne(
+    return await this.languageRepository.findOne(
       { Id: id },
       { populate: ['Status'] },
     );
-
-    return {
-      Id: language.Id,
-      Name: language.Name,
-      Description: language.Description,
-      Status: language.Status,
-      createdAt: language.createdAt,
-      updatedAt: language.updatedAt,
-    };
   }
 
   async update(
@@ -73,12 +56,12 @@ export class LanguageService {
       this.languageRepository.assign(language, updateLanguageDto);
       await this.em.persistAndFlush(language);
 
-      return await this.findOne(language.Id);
+      return language;
     }
   }
 
   async remove(id: number): Promise<Language> {
-    const language = await this.findOne(id);
+    const language = await this.languageRepository.findOne({ Id: id });
 
     if (language) {
       await this.em.removeAndFlush(language);

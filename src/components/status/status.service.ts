@@ -18,40 +18,25 @@ export class StatusService {
       ...createStatusDto,
       updatedAt: new Date(),
     });
+
     await this.em.persistAndFlush(status);
 
-    return this.findOne(status.Id);
+    return status;
   }
 
   async findAll(): Promise<Status[]> {
-    const statuses = await this.statusRepository.findAll();
-
-    return statuses.map((status) => ({
-      Id: status.Id,
-      Name: status.Name,
-      Description: status.Description,
-      createdAt: status.createdAt,
-      updatedAt: status.updatedAt,
-    }));
+    return await this.statusRepository.findAll({ populate: ['Books'] });
   }
 
   async findOne(id: number): Promise<Status> {
-    const status = await this.statusRepository.findOne({ Id: id });
-
-    return {
-      Id: status.Id,
-      Name: status.Name,
-      Description: status.Description,
-      createdAt: status.createdAt,
-      updatedAt: status.updatedAt,
-    };
+    return await this.statusRepository.findOne({ Id: id });
   }
 
   async update(id: number, updateStatusDto: UpdateStatusDto): Promise<Status> {
-    const status = await this.findOne(id);
+    const status = await this.statusRepository.findOne({ Id: id });
 
     if (status) {
-      this.statusRepository.assign(status, updateStatusDto);
+      Object.assign(status, updateStatusDto);
       await this.em.persistAndFlush(status);
 
       return status;
@@ -59,7 +44,7 @@ export class StatusService {
   }
 
   async remove(id: number): Promise<Status> {
-    const status = await this.findOne(id);
+    const status = await this.statusRepository.findOne({ Id: id });
 
     if (status) {
       await this.em.removeAndFlush(status);
