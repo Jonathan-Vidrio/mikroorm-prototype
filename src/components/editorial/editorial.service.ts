@@ -36,7 +36,7 @@ export class EditorialService {
   async findOne(id: number): Promise<Editorial> {
     return await this.editorialRepository.findOne(
       { Id: id },
-      { populate: ['Status'] },
+      { populate: ['Status', 'Books'] },
     );
   }
 

@@ -36,7 +36,7 @@ export class LanguageService {
   async findOne(id: number): Promise<Language> {
     return await this.languageRepository.findOne(
       { Id: id },
-      { populate: ['Status'] },
+      { populate: ['Status', 'Books'] },
     );
   }
 

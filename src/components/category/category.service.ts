@@ -36,7 +36,7 @@ export class CategoryService {
   async findOne(id: number): Promise<Category> {
     return await this.categoryRepository.findOne(
       { Id: id },
-      { populate: ['Status'] },
+      { populate: ['Status', 'Books'] },
     );
   }
 

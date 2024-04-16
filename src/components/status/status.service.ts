@@ -29,7 +29,10 @@ export class StatusService {
   }
 
   async findOne(id: number): Promise<Status> {
-    return await this.statusRepository.findOne({ Id: id });
+    return await this.statusRepository.findOne(
+      { Id: id },
+      { populate: ['Books'] },
+    );
   }
 
   async update(id: number, updateStatusDto: UpdateStatusDto): Promise<Status> {

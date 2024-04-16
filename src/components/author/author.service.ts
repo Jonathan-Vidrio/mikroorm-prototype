@@ -36,7 +36,7 @@ export class AuthorService {
   async findOne(id: number): Promise<Author> {
     return await this.authorRepository.findOne(
       { Id: id },
-      { populate: ['Status'] },
+      { populate: ['Status', 'Books'] },
     );
   }
 
